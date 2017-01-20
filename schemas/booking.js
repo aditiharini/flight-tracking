@@ -1,4 +1,5 @@
 var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
 var bookingSchema = new Schema({
     airline: String,
     price: Number,

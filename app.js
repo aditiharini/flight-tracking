@@ -4,7 +4,14 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var mongoose = require('mongoose');
+var passport = require('passport');
+var flash = require('connect-flash');
+var LocalStrategy = require('passport-local').Strategy; 
+var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 var index = require('./routes/index');
+
+mongoose.connect('mongodb://localhost/flightTracking');
 
 var app = express();
 
@@ -19,8 +26,86 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(require('express-session')({
+	secret: "giraffe",
+	resave: false,
+	saveUninitialized: false
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(flash());
 
 app.use('/', index);
+
+//passport
+var User = require('./schemas/user.js');
+
+// passport.use(new LocalStrategy(User.authenticate()));
+passport.use('local-login', new LocalStrategy({
+	usernameField:'username',
+	passwordField:'password',
+	passReqToCallback: true
+}, function(req, username, password, done){
+	User.findOne({username:username}, function(err, user){
+		console.log(user);
+		if(err){
+			return done(err);
+		}
+		if(!user){
+			return done(null, false, req.flash('loginMessage', 'no matching user'));
+		}
+		if(!user.validPassword(password)){
+			return done(null, false, req.flash('loginMessage, "wrong password'));
+		}
+		return done(null, user);
+	});
+}));
+passport.use(new GoogleStrategy({
+	clientID:'1062406632261-i6pjf2akod9nr4ur9konj4uqiff02acd.apps.googleusercontent.com',
+	clientSecret:'p2QU9w7fymTv9-zB4KpNpWfJ',
+	callbackURL:'http://localhost:3000/auth/google/callback',
+}, function(token, refreshToken, profile, done){
+	// console.log(profile);
+	// done(null, profile);
+		console.log('got to auth');
+		console.log(profile);
+		// User.findOrCreate({'google.id':profile.id}, function(err,user){
+		// 	return done(err, user);
+		// });
+		process.nextTick(function(){
+		User.findOne({'google.email':profile.emails[0].value}, function(err, user){
+			if (err){
+				return done(err);
+			}
+			if (user){
+				return done(null, user);
+			}
+			else{
+				User.create({'google.name':profile.displayName, 'google.email':profile.emails[0].value}, function(err, user){
+					if(err){
+						throw err;
+					}
+					return done(null, user);
+				});
+			}
+		});
+	});
+}));
+
+// passport.serializeUser(User.serializeUser());
+passport.serializeUser(function(user,done){
+	console.log('got to serialize');
+	done(null, user);
+});
+// passport.deserializeUser(User.deserializeUser());
+passport.deserializeUser(function(obj,done){
+	console.log('got to deserialize');
+	// User.findById(id, function(err,user){
+	// 	done(null, user);
+	// });
+	done(null, obj);
+});
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
