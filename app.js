@@ -11,8 +11,10 @@ var LocalStrategy = require('passport-local').Strategy;
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 var index = require('./routes/index');
 var scheduler = require('./scheduling.js');
-mongoose.connect(process.env.MONGOLAB_URI|'mongodb://bookitnow:eY2E8z6usp79i87JMK3iwgRJU1pYvWg5vQDXKvS707kQM03D6ml290lPHeBMAaIZWHWWRIQ5LEa6ehz7I1tJvQ==@bookitnow.documents.azure.com:10250/?ssl=true');
-// mongodb://localhost/flightTracking
+mongoose.connect('mongodb://bookitnow:eY2E8z6usp79i87JMK3iwgRJU1pYvWg5vQDXKvS707kQM03D6ml290lPHeBMAaIZWHWWRIQ5LEa6ehz7I1tJvQ==@bookitnow.documents.azure.com:10250/?ssl=true');
+//mongodb://localhost/flightTracking
+//process.env.MONGOLAB_URI|'mongodb://bookitnow:eY2E8z6usp79i87JMK3iwgRJU1pYvWg5vQDXKvS707kQM03D6ml290lPHeBMAaIZWHWWRIQ5LEa6ehz7I1tJvQ==@bookitnow.documents.azure.com:10250/?ssl=true'
+// 
 
 var app = express();
 
@@ -110,7 +112,7 @@ passport.deserializeUser(function(obj,done){
 setInterval(function(){
 	scheduler.updateTickets();
 	console.log("update finished");
-}, 7200000);
+}, 60000);
 //7200000 for 2 hrs
 // supposed to be 21600000 for every 6 hrs
 
