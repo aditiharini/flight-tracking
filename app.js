@@ -11,7 +11,8 @@ var LocalStrategy = require('passport-local').Strategy;
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 var index = require('./routes/index');
 var scheduler = require('./scheduling.js');
-mongoose.connect('mongodb://localhost/flightTracking');
+mongoose.connect('https://bookitnow.documents.azure.com:443/');
+// mongodb://localhost/flightTracking
 
 var app = express();
 

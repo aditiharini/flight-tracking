@@ -140,7 +140,6 @@ router.post('/book', function(req, res, next){
 });
 router.get("/viewBookings", isLoggedIn, function(req, res, next){
 	var results = {};
-
 	
 	User.findOne({_id:req.user._id}, function(err, user){
 		if(err){
@@ -152,7 +151,7 @@ router.get("/viewBookings", isLoggedIn, function(req, res, next){
 			var bookings = user.bookings;
 			bookings.forEach(function(booking, index, array){
 				console.log(booking);
-				var result = Ticket.findOne({'booking._id':booking._id, batchNumber:booking.maxBatchNumber}).sort({price:1}).exec(function(err, ticket){
+				var result = Ticket.findOne({'booking._id':booking._id, batchNumber:booking.maxBatchNumber-1}).sort({price:1}).exec(function(err, ticket){
 				    console.log('got here');
 				    if(err){
 				        console.log(err);
