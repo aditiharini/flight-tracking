@@ -36,7 +36,12 @@ function flightSearchOneWay(fromAirport, toAirport, departDate, booking, user) {
   var url = util.format("https://www.kayak.com/flights/%s-%s/%s", fromAirport, toAirport, departDate);
   console.log(url);
   //ex: https://www.kayak.com/flights/DEN-PHX/2017-02-15
+  // var headers = {
+  // 	'Authorization': 'sdkfs',
+
+  // };
   nightmare
+  	  // .headers(headers)
       .goto(url)
       .wait('.Flights-Results-FlightResultItem')
       .evaluate(function () {
@@ -76,6 +81,7 @@ function flightSearchOneWay(fromAirport, toAirport, departDate, booking, user) {
       })
       .end()
       .then(function(data) {
+
       	createTickets(data, booking, user);
         // console.log("returned data:" + JSON.stringify(data));
         done();
