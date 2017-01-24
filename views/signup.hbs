@@ -6,10 +6,8 @@
     <!-- <form method = 'POST' action='/signup' id='signupform'> --><div id=inputs>
     	<label name ='email'>Email</label>
     	<input id='email'></input>
-    	<label name = 'username'>Username</label>
-    	<input id='username'></input>
     	<label name = 'password'>Password</label>
-    	<input id = 'password'></input>
+    	<input id = 'password' type= 'password'></input>
     	<button type='submit' id='submitSignup'> Sign Up </button>
     	<div id=messages>
     	</div>
@@ -21,12 +19,11 @@
     		$('#submitSignup').click(function(){
     			$('#messages').empty();
     			var email = $('#email').val();
-    			var username = $('#username').val();
     			var password = $('#password').val();
     			$.ajax({
     				type:'POST',
     				url:'/signup',
-    				data: {email:email, username:username, password:password},
+    				data: {email:email, password:password},
     				dataType:'json',
     				success:function(res){
     					message = res.message;

@@ -1,2 +1,43 @@
 <html>
+<head>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+</head>
+	<div>
+		<a href='/viewBookings'>View Bookings</a>
+		<label>Departure Airport</label>
+		<input id="fromAirport"></input>
+		<label>Destination Airport</label>
+		<input id= "toAirport"></input>
+		<label>Departure Date</label>
+		<input id='departDate'></input>
+		<label>Threshold</label>
+		<input id='threshold'></input>
+		<button type="submit" id="addFlight">Add Flight</button>
+		<div id='messages'>
+			
+		</div>
+	</div>
+	<script>
+		$(document).ready(function(){
+			$('#addFlight').click(function(){
+				$('#messages').empty();
+				var fromAirport = $('#fromAirport').val();
+				var toAirport = $('#toAirport').val();
+				var departDate = $('#departDate').val();
+				var threshold = $('#threshold').val();
+				$.ajax({
+					type:'POST',
+					url:'/book',
+					data:{fromLoc:fromAirport, toLoc:toAirport, depDate: departDate, threshold:threshold},
+					dataType:'json',
+					success:function(res){
+						console.log('success');
+						$('#messages').append('<p>' + res.message + '</p');
+
+					}
+
+				});
+			});
+		});
+	</script>
 </html>

@@ -10,7 +10,7 @@ var flash = require('connect-flash');
 var LocalStrategy = require('passport-local').Strategy; 
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 var index = require('./routes/index');
-
+var scheduler = require('./scheduling.js');
 mongoose.connect('mongodb://localhost/flightTracking');
 
 var app = express();
@@ -42,11 +42,11 @@ var User = require('./schemas/user.js');
 
 // passport.use(new LocalStrategy(User.authenticate()));
 passport.use('local-login', new LocalStrategy({
-	usernameField:'username',
+	usernameField:'email',
 	passwordField:'password',
 	passReqToCallback: true
-}, function(req, username, password, done){
-	User.findOne({username:username}, function(err, user){
+}, function(req, email, password, done){
+	User.findOne({email:email}, function(err, user){
 		console.log(user);
 		if(err){
 			return done(err);
@@ -73,7 +73,7 @@ passport.use(new GoogleStrategy({
 		// 	return done(err, user);
 		// });
 		process.nextTick(function(){
-		User.findOne({'google.email':profile.emails[0].value}, function(err, user){
+		User.findOne({email:profile.emails[0].value}, function(err, user){
 			if (err){
 				return done(err);
 			}
@@ -81,7 +81,7 @@ passport.use(new GoogleStrategy({
 				return done(null, user);
 			}
 			else{
-				User.create({'google.name':profile.displayName, 'google.email':profile.emails[0].value}, function(err, user){
+				User.create({name:profile.displayName, email:profile.emails[0].value}, function(err, user){
 					if(err){
 						throw err;
 					}
@@ -106,6 +106,12 @@ passport.deserializeUser(function(obj,done){
 	done(null, obj);
 });
 
+setInterval(function(){
+	scheduler.updateTickets();
+	console.log("update finished");
+}, 7200000);
+//7200000 for 2 hrs
+// supposed to be 21600000 for every 6 hrs
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

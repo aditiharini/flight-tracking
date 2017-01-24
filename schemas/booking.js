@@ -13,8 +13,15 @@ var bookingSchema = new Schema({
     numYoungAdulttickets: Number,
     numChildrentickets: Number,
     numStops: Number,
-    isActive: Boolean
+    priceThreshold:Number,
+    maxBatchNumber: {type:Number, default:0}
 });
+
+// bookingSchema.methods.findMinPrice = function(callback){
+//     // should use same code used in router
+//     return Ticket.findOne({'booking._id':this.ObjectId}).sort({price:1}).exec(callback);
+
+// };
 
 var Booking = mongoose.model('Booking', bookingSchema);
 module.exports = Booking;

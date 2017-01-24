@@ -7,11 +7,9 @@ var passportLocalMongoose = require('passport-local-mongoose');
 
 var userSchema = new Schema({
     name: String,
-    username: String,
     password: String,
     email: String,
     bookings: [Booking.schema],
-    google:{id:String, token:String, email:String, name:String}
 });
 // userSchema.plugin(passportLocalMongoose);
 userSchema.methods.generateHash = function(password){
