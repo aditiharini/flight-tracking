@@ -11,7 +11,7 @@ var LocalStrategy = require('passport-local').Strategy;
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 var index = require('./routes/index');
 var scheduler = require('./scheduling.js');
-mongoose.connect('mongodb://bookitnow:eY2E8z6usp79i87JMK3iwgRJU1pYvWg5vQDXKvS707kQM03D6ml290lPHeBMAaIZWHWWRIQ5LEa6ehz7I1tJvQ==@bookitnow.documents.azure.com:10250/?ssl=true');
+mongoose.connect(process.env.MONGOLAB_URI|'mongodb://bookitnow:eY2E8z6usp79i87JMK3iwgRJU1pYvWg5vQDXKvS707kQM03D6ml290lPHeBMAaIZWHWWRIQ5LEa6ehz7I1tJvQ==@bookitnow.documents.azure.com:10250/?ssl=true');
 // mongodb://localhost/flightTracking
 
 var app = express();
